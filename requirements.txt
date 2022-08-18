@@ -1,0 +1,13 @@
+matplotlib
+
+numpy
+
+pandas
+
+scipy
+
+seaborn
+
+streamlit
+
+lightgbm==3.1.1
