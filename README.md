@@ -4,3 +4,5 @@ Churn has two main divisions: voluntary churn and involuntary churn. As you may 
 Past churn models have shown that customers rarely leave because of one singular event. More often their disenchantment with an organization grows over time due to a buildup of unsatisfying and frustrating events. By the time a competing offer comes around, customers have been ready to jump ship for some time.
 
 Predicitng the churnability of a customer is essentially a classification model where the various associated metrics are evaluated to estimate the churnability of a customer. For further detailed understanding, data scientists refer to ROC_AUC curves and Bayes' classification methods for calibrated results.
+
+streamlit : https://bitanb1999-streamlit-teleco-churn-app-2dvz32.streamlitapp.com/
