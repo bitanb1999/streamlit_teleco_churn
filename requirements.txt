@@ -1,13 +1,13 @@
-matplotlib
+matplotlib==3.3.3
 
-numpy
+numpy==1.19.5
 
-pandas
+pandas==1.2.1
 
-scipy
+scipy==1.5.4
 
-seaborn
+seaborn==0.11.1
 
-streamlit
+streamlit==0.75.0
 
 lightgbm==3.1.1
