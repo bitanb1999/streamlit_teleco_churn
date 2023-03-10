@@ -61,9 +61,11 @@ columns_select = st.selectbox("Select All Columns or Select Columns You Want to 
 if columns_select == "Select Columns to Drop":
     d_list = st.multiselect("Please select columns to be dropped", df.columns)
     df = df.drop(d_list, axis=1)
-    if st.button("Generate Codes for Columns to be Dropped"):
-        if columns_select == "Select Columns to Drop":
-            st.code(f"""df = df.drop({d_list},axis=1)""")
+if (
+    st.button("Generate Codes for Columns to be Dropped")
+    and columns_select == "Select Columns to Drop"
+):
+    st.code(f"""df = df.drop({d_list},axis=1)""")
 
 st.header('Multicollinearity Checking')
 threshold = st.selectbox("Select threshold for multicollinearity", (1, 0.9, 0.8, 0.7))
@@ -241,32 +243,23 @@ if standardization == 'Apply Standardization':
     methods = st.selectbox("Select one of the Standardization Methods: ",
                            ("StandardScaler", "MinMaxScaler", "RobustScaler"))
 
-    num_cols = []
     df_new = df1.drop(target_column, axis=1)
     numeric_cols = df_new.select_dtypes(exclude=["object"]).columns
-    for i in numeric_cols:
-        if i not in df.columns:
-            pass
-        else:
-            num_cols.append(i)
-
+    num_cols = [i for i in numeric_cols if i in df.columns]
     for i in num_cols:
         if methods == "StandardScaler":
             scaler = StandardScaler()
-            df[num_cols] = scaler.fit_transform(df[num_cols])
-
         elif methods == "MinMaxScaler":
             scaler = MinMaxScaler()
-            df[num_cols] = scaler.fit_transform(df[num_cols])
-
         else:
             scaler = RobustScaler()
-            df[num_cols] = scaler.fit_transform(df[num_cols])
+        df[num_cols] = scaler.fit_transform(df[num_cols])
+
     st.write(f"{num_cols} are scaled by using {methods}")
 
 st.header('Model Evaluation')
 models_name = st.sidebar.selectbox("Select Model for ML", ("LightGBM", "Random Forest"))
-params = dict()
+params = {}
 
 
 def parameter_selection(clf_name):
@@ -304,16 +297,25 @@ parameter_selection(models_name)
 
 def get_classifier(classifier_name, params):
 
-    if classifier_name == "LightGBM":
-
-        clf_model = LGBMClassifier(num_leaves=params["num_leaves"], n_estimators=params["n_estimators"], max_depth=params["max_depth"], learning_rate=params["learning_rate"], random_state=42)
-    else:
-        clf_model = RandomForestClassifier(n_estimators=params["n_estimators"], max_depth=params["max_depth"],
-                                            criterion=params["criterion"], max_features=params["max_features"],
-                                            min_samples_leaf=params["min_samples_leaf"],
-                                            min_samples_split=params["min_samples_split"], random_state=42)
-
-    return clf_model
+    return (
+        LGBMClassifier(
+            num_leaves=params["num_leaves"],
+            n_estimators=params["n_estimators"],
+            max_depth=params["max_depth"],
+            learning_rate=params["learning_rate"],
+            random_state=42,
+        )
+        if classifier_name == "LightGBM"
+        else RandomForestClassifier(
+            n_estimators=params["n_estimators"],
+            max_depth=params["max_depth"],
+            criterion=params["criterion"],
+            max_features=params["max_features"],
+            min_samples_leaf=params["min_samples_leaf"],
+            min_samples_split=params["min_samples_split"],
+            random_state=42,
+        )
+    )
 
 
 clf_model = get_classifier(models_name, params)
@@ -344,7 +346,7 @@ def download_model(model):
 
 
 download_model(clf_model)
-st.write(f'Trained model is saved as final_model for later use')
+st.write('Trained model is saved as final_model for later use')
 
 
 
